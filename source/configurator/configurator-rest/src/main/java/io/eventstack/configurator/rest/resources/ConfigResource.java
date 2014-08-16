@@ -1,6 +1,6 @@
-package io.eventstack.rest.resources;
+package io.eventstack.configurator.rest.resources;
 
-import io.eventstack.rest.s3.S3Client;
+import io.eventstack.configurator.rest.s3.S3Client;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

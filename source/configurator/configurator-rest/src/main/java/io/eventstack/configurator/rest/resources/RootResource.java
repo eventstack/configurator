@@ -1,4 +1,4 @@
-package io.eventstack.rest.resources;
+package io.eventstack.configurator.rest.resources;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;

@@ -1,4 +1,4 @@
-package io.eventstack.rest.s3;
+package io.eventstack.configurator.rest.s3;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;

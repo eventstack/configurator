@@ -1,4 +1,4 @@
-package io.eventstack.rest.filters;
+package io.eventstack.configurator.rest.filters;
 
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerResponseContext;
