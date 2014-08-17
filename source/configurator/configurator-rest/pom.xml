@@ -25,6 +25,16 @@
             <artifactId>aws-java-sdk</artifactId>
             <version>1.8.7</version>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.ext</groupId>
+            <artifactId>jersey-mvc-mustache</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio-java-sdk</artifactId>
+            <version>3.4.5</version>
+        </dependency>
     </dependencies>
     <build>
         <finalName>configurator-rest</finalName>

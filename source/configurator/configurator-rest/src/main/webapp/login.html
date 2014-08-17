@@ -1,0 +1,97 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Eventstack Config Server</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
+</head>
+<body>
+<!-- Wrap all page content here -->
+<div id="wrap">
+
+    <div class="container">
+
+        <form id="mobile-number-form" class="form-signin" role="form">
+            <h2 class="form-signin-heading">Enter your mobile #</h2>
+            <input type="text" class="form-control" placeholder="Mobile Number" id="mobile" required autofocus>
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="submit-btn">Send Passcode</button>
+        </form>
+
+        <form id="login-form" class="form-signin" role="form">
+            <h2 class="form-signin-heading">Enter passcode</h2>
+            <input type="text" class="form-control" placeholder="Passcode" id="passcode">
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="submit-btn">Login</button>
+        </form>
+
+    </div> <!-- /container -->
+</div>
+
+<div id="footer">
+    <div class="container">
+        <p>Copyright 2014 eventstack.io</p>
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $( document ).ready(function() {
+        $("#login-form").hide();
+
+        $( "#mobile-number-form" ).submit(function( event ) {
+            var req = {};
+            req["mobile"] = $("#mobile").val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                url: "/login/sendPasscode",
+                data: JSON.stringify(req),
+                success: function(data) {
+                    alert("sent passcode");
+
+                    // hide request passcode form
+                    $("#mobile-number-form").hide();
+
+                    // show the login form
+                    $("#login-form").show();
+                }
+            });
+
+            event.preventDefault();
+        });
+
+        $( "#login-form" ).submit(function( event ) {
+            var req = {};
+            req["mobile"] = $("#mobile").val();
+            req["passcode"] = $("#passcode").val();
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                url: "/login",
+                data: JSON.stringify(req),
+                success: function(data) {
+                    if (data.success) {
+                        location.href = "/dashboard";
+                    } else {
+                        alert("invalid passcode");
+                        // hide request passcode form
+                        $("#mobile-number-form").show();
+
+                        // show the login form
+                        $("#login-form").hide();
+                    }
+                }
+            });
+
+            event.preventDefault();
+        });
+    });
+</script>
+</body>
+</html>
