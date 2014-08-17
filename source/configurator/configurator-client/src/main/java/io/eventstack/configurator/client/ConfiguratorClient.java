@@ -24,7 +24,8 @@ public class ConfiguratorClient {
     private final String appId;
     private final String env;
 
-    public static Map<String, String> getConfiguration(String appId, String env, boolean refresh) {
+    public static Map<String, String> getConfiguration(String appId, boolean refresh) {
+        String env = System.getProperty("env");
         String key = String.format("%s/%s", appId, env);
         Map<String, String> value = configs.get(key);
         if (refresh || value == null) {
@@ -61,10 +62,10 @@ public class ConfiguratorClient {
     }
 
     public static void main(String[] args) {
-        Map<String,String> config = ConfiguratorClient.getConfiguration("testapp", "dev", false);
+        Map<String,String> config = ConfiguratorClient.getConfiguration("configurator-sample", false);
         System.out.println(config);
 
-        config = ConfiguratorClient.getConfiguration("testapp", "dev", false);
+        config = ConfiguratorClient.getConfiguration("configurator-sample", false);
         System.out.println(config);
     }
 }

@@ -8,6 +8,7 @@
     <modules>
         <module>configurator-rest</module>
         <module>configurator-client</module>
+        <module>configurator-sample-webapp</module>
     </modules>
     <packaging>pom</packaging>
 

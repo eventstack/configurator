@@ -1,6 +1,8 @@
 package io.eventstack.configurator.rest.resources;
 
 import io.eventstack.configurator.rest.s3.S3Client;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,6 +20,8 @@ import java.util.Map;
  */
 @Path("configs")
 public class ConfigResource {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConfigResource.class);
+
     @GET
     @Path("{app}/{env}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -26,10 +30,11 @@ public class ConfigResource {
         String key = String.format("%s/%s", app, env);
         S3Client client = S3Client.getInstance();
         try {
+            LOGGER.info("retrieving config for {}", key);
             Map<String, String> map = client.read(key);
             return Response.ok(map).build();
         } catch (Exception e) {
-            e.printStackTrace();
+            LOGGER.warn("Unable to get config for " + key, e);
         }
 
         return Response.ok(new HashMap<String, String>()).build();
