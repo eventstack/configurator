@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Eventstack Config Server</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
+</head>
+<body>
+<!-- Wrap all page content here -->
+<div id="wrap">
+
+    <div class="container">
+
+        <!-- top navbar -->
+        <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="offcanvas" data-target=".sidebar-nav">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">EventStack Configurator</a>
+
+                </div>
+                <div class="navbar-collapse collapse">
+
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">App <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="#">App1</a></li>
+                                <li><a href="#">App2</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#" data-toggle="modal" data-target="#new-app-modal">New App</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="#">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            <div class="row row-offcanvas row-offcanvas-left">
+
+                <div class="app-info">
+                    <h2>App 123</h2>
+                    <dl>
+                        <dt>App Id</dt>
+                        <dd>my-app-id</dd>
+                    </dl>
+                    <ul class="nav nav-pills">
+                        <li class="active"><a href="#">Env1</a></li>
+                        <li><a href="#">Env2</a></li>
+                        <li><a href="#">Env3</a></li>
+                    </ul>
+                </div>
+
+                <div class="panel properties-panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Properties</h3>
+                    </div>
+                    <div class="panel-body">
+                        <form class="form-horizontal" role="form">
+                            <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-2 control-label">Email</label>
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-default">Update</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div><!--/.row-->
+        </div><!--/.container-->
+
+
+    </div> <!-- /container -->
+</div>
+
+<div id="footer">
+    <div class="container">
+        <p>Copyright 2014 eventstack.io</p>
+    </div>
+</div>
+
+
+<!-- New App Modal -->
+<div class="modal fade" id="new-app-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">New App</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="inputEmail3" class="col-sm-2 control-label">App Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="app-name" placeholder="App Name">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">App ID</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="app-id" placeholder="App ID">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save-btn" data-dismiss="modal">Create App</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="js/bootstrap.min.js"></script>
+<script type="text/javascript">
+    $( document ).ready(function() {
+        $("#new-app-modal .save-btn").on('click', function() {
+           console.log("create app clicked");
+            var appId = $("#new-app-modal #app-id").val();
+            var appName = $("#new-app-modal #app-name").val();
+
+            var createAppRequest = {appId:appId, appName:appName};
+            console.log(createAppRequest);
+        });
+    });
+</script>
+</body>
+</html>

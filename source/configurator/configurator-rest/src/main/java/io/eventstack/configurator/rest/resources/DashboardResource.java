@@ -1,13 +1,13 @@
 package io.eventstack.configurator.rest.resources;
 
-import org.glassfish.jersey.server.mvc.Viewable;
-
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import java.util.HashMap;
-import java.util.Map;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.net.URI;
 
 /**
  * Created by gavin on 8/17/14.
@@ -15,12 +15,18 @@ import java.util.Map;
 @Path("/dashboard")
 public class DashboardResource {
 
+    @Context
+    UriInfo uriInfo;
+
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Viewable getRoot() {
-        Map<String,Object> map = new HashMap<String,Object>();
+    public Response getDashboard() {
+//        Map<String,Object> map = new HashMap<String,Object>();
+//
+//        return new Viewable("index.mustache", map);
 
-        return new Viewable("index.mustache", map);
+        URI uri = uriInfo.getBaseUriBuilder().path("dashboard.html").build();
+        return Response.seeOther(uri).build();
     }
 
 }
