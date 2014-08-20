@@ -4,7 +4,7 @@ import com.twilio.sdk.TwilioRestClient;
 import com.twilio.sdk.TwilioRestException;
 import com.twilio.sdk.resource.factory.MessageFactory;
 import com.twilio.sdk.resource.instance.Message;
-import io.eventstack.PasscodeMap;
+import io.eventstack.configurator.rest.PasscodeMap;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 

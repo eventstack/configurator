@@ -31,14 +31,10 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">App <span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">App1</a></li>
-                                <li><a href="#">App2</a></li>
-                                <li class="divider"></li>
-                                <li><a href="#" data-toggle="modal" data-target="#new-app-modal">New App</a></li>
+                            <ul id="apps-dropdown" class="dropdown-menu" role="menu">
                             </ul>
                         </li>
-                        <li><a href="#">Logout</a></li>
+                        <li><a href="/logout">Logout</a></li>
                     </ul>
                 </div>
             </div>
@@ -138,15 +134,47 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
 <script type="text/javascript">
+    function loadApps() {
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            url: "/apps",
+            success: function(data) {
+                console.log(data);
+                data.forEach(function(item) {
+                    $('#apps-dropdown').append("<li><a href=\"#" + item.id + "\">" + item.name + "</a></li>");
+                });
+
+                $('#apps-dropdown a').click(function(e) {
+                    console.log(e.currentTarget.hash);
+                });
+
+                $('#apps-dropdown').append("<li class=\"divider\"></li><li><a href=\"#\" data-toggle=\"modal\" data-target=\"#new-app-modal\">New App</a></li>");
+            }
+        });
+    }
     $( document ).ready(function() {
+        loadApps();
         $("#new-app-modal .save-btn").on('click', function() {
            console.log("create app clicked");
             var appId = $("#new-app-modal #app-id").val();
             var appName = $("#new-app-modal #app-name").val();
 
-            var createAppRequest = {appId:appId, appName:appName};
+            var createAppRequest = {id:appId, name:appName};
             console.log(createAppRequest);
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                url: "/apps",
+                data: JSON.stringify(createAppRequest),
+                success: function(data) {
+                    alert("created app");
+                }
+            });
         });
+
     });
 </script>
 </body>

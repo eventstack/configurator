@@ -34,7 +34,7 @@ public class ConfigResource {
             Map<String, String> map = client.read(key);
             return Response.ok(map).build();
         } catch (Exception e) {
-            LOGGER.warn("Unable to get config for " + key, e);
+            LOGGER.warn("Unable to find config for " + key, e);
         }
 
         return Response.ok(new HashMap<String, String>()).build();
