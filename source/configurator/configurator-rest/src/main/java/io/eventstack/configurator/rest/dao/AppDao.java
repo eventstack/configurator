@@ -63,7 +63,14 @@ public class AppDao {
     }
 
     public void createEnvironment(String appId, Environment environment) {
-
+        try {
+            DBObject q = new BasicDBObject("_id", appId);
+            DBObject update = new BasicDBObject("$push",
+                    new BasicDBObject("environments", new BasicDBObject(environment.toMap())));
+            DBObject o = getAppsCollection().findAndModify(q, update);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     public void deleteEnvironment(String appId, String environmentId) {

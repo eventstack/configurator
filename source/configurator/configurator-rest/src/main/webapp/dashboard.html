@@ -43,17 +43,23 @@
         <div class="container">
             <div class="row row-offcanvas row-offcanvas-left">
 
-                <div class="app-info">
-                    <h2>App 123</h2>
-                    <dl>
-                        <dt>App Id</dt>
-                        <dd>my-app-id</dd>
-                    </dl>
-                    <ul class="nav nav-pills">
-                        <li class="active"><a href="#">Env1</a></li>
-                        <li><a href="#">Env2</a></li>
-                        <li><a href="#">Env3</a></li>
-                    </ul>
+                <div class="panel properties-panel">
+                    <div class="panel-heading">
+                        <h2 id="app-name">[App name here]</h2>
+                    </div>
+                    <div class="panel-body">
+                        <dl class="pull-left">
+                            <dt>App Id</dt>
+                            <dd id="app-id">[App id here]</dd>
+                        </dl>
+                        <ul class="nav nav-pills pull-right" id="env-list">
+                        </ul>
+                    </div>
+                    <div class="panel-footer">
+                        <ul class="nav nav-pills" id="action-list">
+                            <li><a href="#" data-toggle="modal" data-target="#new-env-modal">New environment</a></li>
+                        </ul>
+                    </div>
                 </div>
 
                 <div class="panel properties-panel">
@@ -128,13 +134,49 @@
     </div>
 </div>
 
+<!-- New App Modal -->
+<div class="modal fade" id="new-env-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">New Environment</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal" role="form">
+                    <div class="form-group">
+                        <label for="inputPassword3" class="col-sm-2 control-label">Env ID</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="env-id" placeholder="Environment ID">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary save-btn" data-dismiss="modal">Create Environment</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="js/bootstrap.min.js"></script>
 <script type="text/javascript">
-    function loadApps() {
+    var currentAppId;
+    var currentEnvId;
+    var environments;
+
+    function getAppIdAndEnvIdFromHash() {
+        var hash = location.hash;
+        if (hash.length > 0)
+            return hash.slice(1).split(".");
+        return null;
+    }
+
+    function loadApps(cb) {
         $.ajax({
             type: "GET",
             contentType: "application/json",
@@ -147,15 +189,92 @@
                 });
 
                 $('#apps-dropdown a').click(function(e) {
-                    console.log(e.currentTarget.hash);
+                    loadApp(e.currentTarget.hash.slice(1));
                 });
 
                 $('#apps-dropdown').append("<li class=\"divider\"></li><li><a href=\"#\" data-toggle=\"modal\" data-target=\"#new-app-modal\">New App</a></li>");
+
+                cb();
             }
         });
     }
+
+    function refreshEnvironments() {
+        $('#env-list').html("");
+        environments.forEach(function(env) {
+            addEnvToNav(env);
+        });
+        $("#env-list a").on('click', function(e) {
+            var envId = $(e.currentTarget).attr("env-id");
+            if (envId != null)
+                selectEnv(envId);
+        });
+    }
+
+    function addEnvToNav(env) {
+        $('#env-list').append("<li><a href=\"#" + currentAppId + "." + env.id + "\" env-id=\"" + env.id + "\">" + env.id + "</a></li>");
+    }
+
+    function selectEnv(env) {
+        currentEnvId = env;
+        $("#env-list li").removeClass("active");
+        $("#env-list li a[env-id='" + env + "']").parent().addClass("active");
+    }
+
+    function loadApp(appId) {
+        currentAppId = appId;
+        $.ajax({
+            type: "GET",
+            contentType: "application/json",
+            dataType: "json",
+            url: "/apps/" + appId ,
+            success: function(data) {
+                console.log(data);
+                $("#app-name").text(data["name"]);
+                $("#app-id").text(data["id"]);
+                $("#env-list").html("");
+                environments = data["environments"];
+                refreshEnvironments();
+
+                if (currentEnvId != null)
+                   selectEnv(currentEnvId);
+            }
+        });
+    }
+
     $( document ).ready(function() {
-        loadApps();
+        $("#new-env-modal .save-btn").on('click', function() {
+            console.log("create env");
+
+            var envId = $("#new-env-modal #env-id").val();
+
+            var createEnvRequest = {id:envId};
+            $.ajax({
+                type: "POST",
+                contentType: "application/json",
+                dataType: "json",
+                url: "/apps/" + currentAppId + "/environments",
+                data: JSON.stringify(createEnvRequest),
+                success: function(data) {
+                    alert("created env");
+                    environments.push(createEnvRequest);
+                    refreshEnvironments();
+                }
+            });
+        });
+
+        loadApps(function() {
+            var appIdAndEnvId = getAppIdAndEnvIdFromHash();
+            if (appIdAndEnvId != null) {
+                currentAppId = appIdAndEnvId[0];
+                if (appIdAndEnvId.length > 1)
+                    currentEnvId = appIdAndEnvId[1];
+
+                if (currentAppId != null)
+                    loadApp(currentAppId);
+            }
+        });
+
         $("#new-app-modal .save-btn").on('click', function() {
            console.log("create app clicked");
             var appId = $("#new-app-modal #app-id").val();

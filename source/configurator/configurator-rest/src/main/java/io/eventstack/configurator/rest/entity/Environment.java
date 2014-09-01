@@ -9,8 +9,11 @@ import java.util.Map;
  */
 public class Environment implements Persistable {
     private String id;
-    private boolean encrypted;
+    private Boolean encrypted;
     private List<AccessKey> accessKeys;
+
+    public Environment() {
+    }
 
     public Environment(Map<String, Object> map) {
         id = (String) map.get("id");
@@ -33,11 +36,11 @@ public class Environment implements Persistable {
         this.accessKeys = accessKeys;
     }
 
-    public boolean isEncrypted() {
+    public Boolean getEncrypted() {
         return encrypted;
     }
 
-    public void setEncrypted(boolean encrypted) {
+    public void setEncrypted(Boolean encrypted) {
         this.encrypted = encrypted;
     }
 
@@ -48,7 +51,7 @@ public class Environment implements Persistable {
         if (id != null)
             map.put("id", id);
 
-        map.put("encrypted", Boolean.valueOf(encrypted));
+        map.put("encrypted", encrypted);
 
         return map;
     }

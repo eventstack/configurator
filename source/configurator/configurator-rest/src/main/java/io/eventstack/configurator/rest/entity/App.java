@@ -17,6 +17,7 @@ public class App implements Persistable {
     private String name;
     private List<String> owners;
     private List<Environment> environments;
+    private List<PropertyDef> propertySet;
 
     public App() {
     }
@@ -38,6 +39,15 @@ public class App implements Persistable {
             for (Object object : list.toArray()) {
                 DBObject dbObject = (DBObject) object;
                 environments.add(new Environment(dbObject.toMap()));
+            }
+        }
+
+        propertySet = new ArrayList<PropertyDef>();
+        if (map.get("propertySet") != null) {
+            BasicDBList list = (BasicDBList) map.get("propertySet");
+            for (Object object : list.toArray()) {
+                DBObject dbObject = (DBObject) object;
+                propertySet.add(new PropertyDef(dbObject.toMap()));
             }
         }
     }
@@ -74,6 +84,14 @@ public class App implements Persistable {
         this.environments = environments;
     }
 
+    public List<PropertyDef> getPropertySet() {
+        return propertySet;
+    }
+
+    public void setPropertySet(List<PropertyDef> propertySet) {
+        this.propertySet = propertySet;
+    }
+
     @Override
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<String, Object>();
@@ -86,6 +104,22 @@ public class App implements Persistable {
 
         if (owners != null)
             map.put("owners", owners);
+
+        if (environments != null) {
+            List<Map<String, Object>> envs = new ArrayList<Map<String, Object>>();
+            for (Environment env : environments)
+                envs.add(env.toMap());
+
+            map.put("environments", envs);
+        }
+
+        if (propertySet != null) {
+            List<Map<String, Object>> props = new ArrayList<Map<String, Object>>();
+            for (PropertyDef def : propertySet)
+                props.add(def.toMap());
+
+            map.put("propertySet", props);
+        }
 
         return map;
     }

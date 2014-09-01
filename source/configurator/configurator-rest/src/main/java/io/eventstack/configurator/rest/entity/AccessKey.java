@@ -3,6 +3,8 @@ package io.eventstack.configurator.rest.entity;
 import java.util.Date;
 
 /**
+ * Basically an API key to access a given environments configuration
+ *
  * Created by gavin on 8/17/14.
  */
 public class AccessKey {
