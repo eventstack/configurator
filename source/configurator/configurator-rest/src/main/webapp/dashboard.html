@@ -436,6 +436,8 @@
                 url: "/apps/" + currentAppId + "/properties",
                 data: JSON.stringify(request),
                 success: function(data) {
+                    if (propertySet === undefined || propertySet == null)
+                        propertySet = [];
                     propertySet.add(request);
                     refreshProperties();
                 }
