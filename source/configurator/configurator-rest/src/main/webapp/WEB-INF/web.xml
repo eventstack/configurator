@@ -37,7 +37,7 @@
         </init-param>
         <init-param>
             <param-name>jersey.config.servlet.filter.staticContentRegex</param-name>
-            <param-value>.*\.jsp|.*\.css|.*\.png|.*\.js|.*\.gif|.*\.jpg|.*\.html</param-value>
+            <param-value>.*\.jsp|.*\.css|.*\.png|.*\.js|.*\.gif|.*\.jpg|.*\.html|.*\.mustache|.*\.eot|.*\.svg|.*\.ttf|.*\.woff</param-value>
         </init-param>
     </filter>
 

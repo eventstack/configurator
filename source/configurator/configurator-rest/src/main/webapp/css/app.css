@@ -70,3 +70,26 @@ body {
 }
 
 .form-control::-webkit-input-placeholder { color: #ddd; }
+
+.btn-default {
+    color: #aaa;
+    background-color: #222;
+    border-width: 2px;
+}
+
+.btn-danger {
+    color: #aaa;
+    background-color: #222;
+    border-width: 2px;
+}
+
+.btn-primary {
+    color: #aaa;
+    background-color: #222;
+    border-width: 2px;
+}
+
+.modal-body {
+    background-color: #013440;
+    color: #aaa;
+}

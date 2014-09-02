@@ -1,14 +1,16 @@
 package io.eventstack.configurator.rest.resources;
 
-import javax.servlet.http.HttpServletRequest;
+import io.eventstack.configurator.rest.exception.InvalidTokenException;
+import org.glassfish.jersey.server.mvc.Viewable;
+
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.net.URI;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by gavin on 8/17/14.
@@ -16,19 +18,15 @@ import java.net.URI;
 @Path("/dashboard")
 public class DashboardResource {
 
-    @Context
-    UriInfo uriInfo;
-
     @GET
     @Produces(MediaType.TEXT_HTML)
-    public Response getDashboard(@Context HttpServletRequest r) {
-        System.out.println("sid=" + r.getSession().getAttribute("sid"));
-//        Map<String,Object> map = new HashMap<String,Object>();
-//
-//        return new Viewable("index.mustache", map);
+    public Viewable getDashboard(@CookieParam("sid") String sid) throws UnknownHostException, InvalidTokenException {
 
-        URI uri = uriInfo.getBaseUriBuilder().path("dashboard.html").build();
-        return Response.seeOther(uri).build();
+        SessionUtils.assertLoggedIn(sid);
+
+        Map<String, Object> map = new HashMap<String, Object>();
+
+        return new Viewable("dashboard.mustache", map);
     }
 
 }
