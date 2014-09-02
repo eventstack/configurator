@@ -68,3 +68,5 @@ body {
     border-top: 1px solid #888;
     background-color: #013440;
 }
+
+.form-control::-webkit-input-placeholder { color: #ddd; }

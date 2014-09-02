@@ -7,6 +7,7 @@ import com.mongodb.DBObject;
 import io.eventstack.configurator.rest.entity.AccessKey;
 import io.eventstack.configurator.rest.entity.App;
 import io.eventstack.configurator.rest.entity.Environment;
+import io.eventstack.configurator.rest.entity.PropertyDef;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -76,6 +77,18 @@ public class AppDao {
     public void deleteEnvironment(String appId, String environmentId) {
 
     }
+
+    public void createPropertyDef(String appId, PropertyDef propertyDef) {
+        try {
+            DBObject q = new BasicDBObject("_id", appId);
+            DBObject update = new BasicDBObject("$push",
+                    new BasicDBObject("propertySet", new BasicDBObject(propertyDef.toMap())));
+            getAppsCollection().update(q, update, true, false);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     public AccessKey createAccessKey(String appId, String environmentId) {
         return null;

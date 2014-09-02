@@ -4,6 +4,7 @@ import io.eventstack.configurator.rest.dao.AppDao;
 import io.eventstack.configurator.rest.dao.UserSessionDao;
 import io.eventstack.configurator.rest.entity.App;
 import io.eventstack.configurator.rest.entity.Environment;
+import io.eventstack.configurator.rest.entity.PropertyDef;
 import io.eventstack.configurator.rest.entity.UserSession;
 import io.eventstack.configurator.rest.exception.InvalidTokenException;
 import io.eventstack.configurator.rest.representations.OperationResponse;
@@ -81,5 +82,22 @@ public class AppsResource {
 
         return Response.status(Response.Status.CREATED)
                 .entity(new OperationResponse(true, "Created environment")).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{appId}/properties")
+    public Response createProperty(@PathParam("appId") String appId,
+                                      PropertyDef property,
+                                      @CookieParam("sid") String sid) throws UnknownHostException, InvalidTokenException {
+        UserSession userSession = new UserSessionDao().find(sid);
+        if (userSession == null)
+            throw new InvalidTokenException("invalid token");
+
+        new AppDao().createPropertyDef(appId, property);
+
+        return Response.status(Response.Status.CREATED)
+                .entity(new OperationResponse(true, "Created property")).build();
     }
 }

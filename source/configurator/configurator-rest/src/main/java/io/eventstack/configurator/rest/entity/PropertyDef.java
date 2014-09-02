@@ -60,7 +60,7 @@ public class PropertyDef implements Persistable {
 
         map.put("name", name);
         map.put("description", description);
-        map.put("type", type);
+        map.put("type", type.name());
         map.put("required", Boolean.toString(required));
 
         return map;
