@@ -2,6 +2,7 @@ var currentAppId;
 var currentEnvId;
 var environments;
 var propertySet;
+var accessKeys;
 
 function getAppIdAndEnvIdFromHash() {
     var hash = location.hash;
@@ -54,6 +55,20 @@ function selectEnv(env) {
     $("#env-list li").removeClass("active");
     $("#env-list li a[env-id='" + env + "']").parent().addClass("active");
     loadConfig(currentAppId, currentEnvId);
+
+    console.log("envs=" + environments.length);
+    console.log(environments);
+    var i;
+    for (i = 0; i< environments.length;i++) {
+        var environment = environments[i];
+        if (environment["id"] == env) {
+            console.log("found environment");
+            accessKeys = environment.accessKeys;
+            console.log(accessKeys);
+            renderAppKeys();
+            break;
+        }
+    }
 }
 
 function loadApp(appId) {
@@ -134,12 +149,6 @@ function deleteEnvironment() {
             contentType: "application/json",
             url: "/apps/" + currentAppId + "/environments/" + currentEnvId,
             success: function(data) {
-                environments.forEach(function(env) {
-                   if (env==currentEnvId) {
-                       environments.remove(env);
-
-                   }
-                });
                 alert("Environment deleted");
                 currentEnvId = null;
                 loadApp(currentAppId);
@@ -148,11 +157,30 @@ function deleteEnvironment() {
     }
 }
 
+function deleteProperty(propertyName) {
+    if (currentAppId != null) {
+        $.ajax({
+            type: "DELETE",
+            contentType: "application/json",
+            url: "/apps/" + currentAppId + "/properties/" + propertyName,
+            success: function(data) {
+                alert("Property deleted");
+            }
+        });
+    }
+}
+
 function renderProperty(propertyDef) {
-    $.get('templates/dashboard-templates.mustache', function(template) {
+    $.get('templates/dashboard-property.mustache', function(template) {
         var html = Mustache.render(template, propertyDef);
-        console.log(html);
         $("#propsForm #properties").append(html);
+    });
+}
+
+function renderAppKeys() {
+    $.get('templates/dashboard-appkey.mustache', function(template) {
+        var html = Mustache.render(template, {appkeys:accessKeys});
+        $("#appkeys").html(html);
     });
 }
 
@@ -165,6 +193,7 @@ function refreshProperties() {
         });
     }
 }
+
 
 $( document ).ready(function() {
 
@@ -192,6 +221,10 @@ $( document ).ready(function() {
 
     $("#delete-env-modal .save-btn").on('click', function() {
         deleteEnvironment();
+    });
+
+    $("#delete-property-modal .save-btn").on('click', function() {
+        deleteProperty();
     });
 
     loadApps(function() {
@@ -249,7 +282,32 @@ $( document ).ready(function() {
         });
     });
 
+    $("#new-appkey-modal .save-btn").on('click', function() {
+        console.log("create property clicked");
+        var appKeyName = $("#new-appkey-modal #app-key-name").val();
+
+        var request = {name:appKeyName};
+        console.log(request);
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            dataType: "json",
+            url: "/apps/" + currentAppId + "/environments/" + currentEnvId + "/accessKeys",
+            data: JSON.stringify(request),
+            success: function(data) {
+                alert("created app key");
+            }
+        });
+    });
+
     $("#discard-changes-button").on('click', function() {
         loadConfig(currentAppId, currentEnvId);
+    });
+
+    console.log($("#new-property-modal"));
+    $('#new-property-modal').on('show.bs.modal', function(e) {
+        console.log(e);
+        var propName = $(e.relatedTarget).data('prop-name');
+        console.log("property-name:" + propName);
     });
 });

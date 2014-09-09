@@ -85,6 +85,20 @@ public class AppDao {
         }
     }
 
+    public void createEnvironmentAccessKey(String appId, String environmentId, AccessKey key) {
+        try {
+            DBObject q = new BasicDBObject("_id", appId);
+            q.put("environments.id", environmentId);
+
+            DBObject update = new BasicDBObject("$push",
+                    new BasicDBObject("environments.$.accessKeys", key.toMap()));
+
+            getAppsCollection().findAndModify(q, update);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void createPropertyDef(String appId, PropertyDef propertyDef) {
         try {
             DBObject q = new BasicDBObject("_id", appId);
@@ -96,9 +110,15 @@ public class AppDao {
         }
     }
 
-
-    public AccessKey createAccessKey(String appId, String environmentId) {
-        return null;
+    public void deletePropertyDef(String appId, String propertyName) {
+        try {
+            DBObject q = new BasicDBObject("_id", appId);
+            DBObject update = new BasicDBObject("$pull",
+                    new BasicDBObject("propertySet", new BasicDBObject("name", propertyName)));
+            getAppsCollection().update(q, update, true, false);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     private DBCollection getAppsCollection() throws UnknownHostException {

@@ -93,3 +93,7 @@ body {
     background-color: #013440;
     color: #aaa;
 }
+
+.table {
+    border-color: #888;
+}

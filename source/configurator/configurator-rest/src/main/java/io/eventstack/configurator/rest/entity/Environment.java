@@ -1,5 +1,6 @@
 package io.eventstack.configurator.rest.entity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,14 @@ public class Environment implements Persistable {
     public Environment(Map<String, Object> map) {
         id = (String) map.get("id");
         encrypted = (Boolean) map.get("encrypted");
+
+        List<Map<String,Object>> oAccessKeys = (List<Map<String,Object>>)map.get("accessKeys");
+        if (oAccessKeys != null) {
+            accessKeys = new ArrayList<AccessKey>();
+            for (Map<String,Object> m:oAccessKeys) {
+                accessKeys.add(new AccessKey(m));
+            }
+        }
     }
 
     public String getId() {

@@ -1,6 +1,7 @@
 package io.eventstack.configurator.rest.resources;
 
 import io.eventstack.configurator.rest.dao.AppDao;
+import io.eventstack.configurator.rest.entity.AccessKey;
 import io.eventstack.configurator.rest.entity.App;
 import io.eventstack.configurator.rest.entity.Environment;
 import io.eventstack.configurator.rest.entity.PropertyDef;
@@ -23,6 +24,7 @@ import java.net.UnknownHostException;
 import java.security.AccessControlException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by gavin on 8/17/14.
@@ -99,6 +101,29 @@ public class AppsResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Path("{appId}/environments/{envId}/accessKeys")
+    public Response createAccessKey(@PathParam("appId") String appId,
+                                      @PathParam("envId") String envId,
+                                      @CookieParam("sid") String sid,
+                                      AccessKey key
+                                      ) throws UnknownHostException, InvalidTokenException {
+        checkIsOwnerOfApp(appId, SessionUtils.getUserIdFromSession(sid));
+
+        String accessKey = UUID.randomUUID().toString();
+        String secretKey = UUID.randomUUID().toString();
+
+        key.setAccessKey(accessKey);
+        key.setSecretKey(secretKey);
+
+        new AppDao().createEnvironmentAccessKey(appId, envId, key);
+
+        return Response.status(Response.Status.CREATED)
+                .entity(key).build();
+    }
+
+    @POST
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("{appId}/properties")
     public Response createProperty(@PathParam("appId") String appId,
                                       PropertyDef property,
@@ -109,6 +134,20 @@ public class AppsResource {
 
         return Response.status(Response.Status.CREATED)
                 .entity(new OperationResponse(true, "Created property")).build();
+    }
+
+    @DELETE
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("{appId}/properties/{propertyName}")
+    public Response deleteProperty(@PathParam("appId") String appId,
+                                      @PathParam("propertyName") String propertyName,
+                                      @CookieParam("sid") String sid) throws UnknownHostException, InvalidTokenException {
+        checkIsOwnerOfApp(appId, SessionUtils.getUserIdFromSession(sid));
+
+        new AppDao().deletePropertyDef(appId, propertyName);
+
+        return Response.status(Response.Status.OK)
+                .entity(new OperationResponse(true, "Deleted property")).build();
     }
 
     private void checkIsOwnerOfApp(String appId, String userId) throws AccessControlException {
